@@ -116,5 +116,11 @@ namespace XLStoHTMLconvert
             richTextBox.Text = Helper.ConvertTableToHTML(dataGridView).ToString();
             tabControl.SelectedTab = tabHTML;
         }
+
+        private void btnConvertBootstrap_Click(object sender, EventArgs e)
+        {
+            richTextBox.Text = Helper.ConvertTableToBootstrapTable(dataGridView).ToString();
+            tabControl.SelectedTab = tabHTML;
+        }
     }
 }

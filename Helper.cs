@@ -15,6 +15,7 @@ namespace XLStoHTMLconvert
     {
         public static Dictionary<string, string> correction;
         public static List<string> prices;
+        public static List<string> headerList;
 
         public static void InitDictionaryAndList()
         {
@@ -28,6 +29,8 @@ namespace XLStoHTMLconvert
 
             prices = new List<String>();
             prices = ConfigurationManager.AppSettings["Prices"].Split(';').ToList();
+            headerList = new List<String>();
+            headerList = ConfigurationManager.AppSettings["Header"].Split(';').ToList();
         }
 
         public static void SaveToDictionary(string key, string value)
@@ -119,11 +122,11 @@ namespace XLStoHTMLconvert
         internal static StringBuilder ConvertTableToHTML(DataGridView dataGridView)
         {
             StringBuilder html = new StringBuilder();
-            
+
             html.AppendLine("<div><table align='center' border='0' cellpadding='2' cellspacing='2'>");
             html.AppendLine("<tbody><tr>");
 
-            for(int col = 0; col < dataGridView.Columns.Count; col++)
+            for (int col = 0; col < dataGridView.Columns.Count; col++)
             {
                 if (!string.IsNullOrEmpty(dataGridView[col, 0].Value.ToString()))
                 {
@@ -140,7 +143,7 @@ namespace XLStoHTMLconvert
                     }
 
                     html.AppendLine("style='text-align: center; background-color: rgb(153, 0, 0);'><div><span style = 'color: rgb(255, 255, 255);'><strong>" + dataGridView[col, 0].Value + "</strong></span></div></td>");
-                }                
+                }
             }
 
             html.AppendLine("</tr><tr>");
@@ -160,11 +163,11 @@ namespace XLStoHTMLconvert
                         break;
                 }
 
-                html.AppendLine("</strong></span></div><div style='text-align: center;'><span style='color: rgb(255, 255, 255);'><strong>" + prices[col-1] + " Ft/adag</strong></span></div></td>");
+                html.AppendLine("</strong></span></div><div style='text-align: center;'><span style='color: rgb(255, 255, 255);'><strong>" + prices[col - 1] + " Ft/adag</strong></span></div></td>");
             }
 
             html.AppendLine("</tr>");
-            
+
             for (int row = 2; row < dataGridView.Rows.Count; row++)
             {
                 html.AppendLine("<tr>");
@@ -178,7 +181,7 @@ namespace XLStoHTMLconvert
 
                     if (data.Contains(System.Environment.NewLine))
                     {
-                        if(firstCell)
+                        if (firstCell)
                         {
                             data = "<strong>" + data.Replace(System.Environment.NewLine, "</strong></span></div><div><span style='color: rgb(255, 255, 255);'>");
                         }
@@ -195,7 +198,7 @@ namespace XLStoHTMLconvert
 
                 html.AppendLine("</tr>");
             }
-            
+
             html.AppendLine("</tbody></table></div>");
             return html;
         }
@@ -203,6 +206,69 @@ namespace XLStoHTMLconvert
         public static string Format8thCell(string data)
         {
             return data.Replace("e:", Environment.NewLine + "E: ").Replace("szh:", Environment.NewLine + "Szh: "); ;
+        }
+
+        public static StringBuilder ConvertTableToBootstrapTable(DataGridView dataGridView)
+        {
+            StringBuilder html = new StringBuilder();
+
+            html.AppendLine("<div class='table-responsive'>");
+            html.AppendLine("\t<table class='table table-hover'>");
+            html.Append(CreateHeader(dataGridView[0, 0].Value.ToString()));
+            html.Append(CreateRows(dataGridView));
+            html.AppendLine("\t</table>");
+            html.AppendLine("</div>");
+            return html;
+        }
+
+        private static string CreateHeader(string firstCell)
+        {
+            StringBuilder header = new StringBuilder();
+            header.AppendLine("\t\t<thead>");
+            header.AppendLine("\t\t\t<tr>");
+            header.Append("\t\t\t\t<th style='text-align: center; vertical-align: middle;'>").Append(firstCell).AppendLine("</th>");
+
+            foreach (string item in headerList)
+            {
+                header.Append("\t\t\t\t<th style='text-align: center; vertical-align: middle;'>").Append(item).AppendLine("</th>");
+            }
+
+            header.AppendLine("\t\t\t</tr>");
+            header.AppendLine("\t\t</thead>");
+            return header.ToString();
+        }
+
+        private static string CreateRows(DataGridView dataGridView)
+        {
+            StringBuilder rows = new StringBuilder();
+            rows.AppendLine("\t\t<tbody>");            
+
+            for (int row = 2; row < dataGridView.Rows.Count; row++)
+            {
+                rows.AppendLine("\t\t\t<tr>");
+                Boolean firstCell = true;
+
+                foreach (DataGridViewCell cell in dataGridView.Rows[row].Cells)
+                {
+                    string data = cell.Value.ToString();
+                    data = data.Replace(System.Environment.NewLine, "<br><em>");
+
+                    if (firstCell)
+                    {
+                        rows.Append("\t\t\t\t<th style='text-align: center; vertical-align: middle;'>").Append(data).AppendLine("</em></th>");
+                        firstCell = false;
+                    }
+                    else
+                    {
+                        rows.Append("\t\t\t\t<td style='text-align: center; vertical-align: middle;'>").Append(data).AppendLine("</em></td>");
+                    }
+                }
+
+                rows.AppendLine("\t\t\t</tr>");
+            }
+            
+            rows.AppendLine("\t\t</tbody>");
+            return rows.ToString();
         }
     }
 }
