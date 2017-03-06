@@ -85,12 +85,12 @@ namespace XLStoHTMLconvert
 
         public static string Capitalize(string input)
         {
-            if (string.IsNullOrEmpty(input))
+            if (!string.IsNullOrEmpty(input))
             {
-                throw new ArgumentException("ARGH!");
+                return char.ToUpper(input[0]) + input.Substring(1).ToLower();
             }
 
-            return char.ToUpper(input[0]) + input.Substring(1).ToLower();
+            return input;            
         }
 
         public static string FormatFirstCell(DateTime day)
@@ -116,7 +116,7 @@ namespace XLStoHTMLconvert
         public static string Format7thCell(string data, string firstCell, string secondCell)
         {
             data = data.Replace("L1,", firstCell + ";").Replace("L2,", secondCell + ";");
-            return data.Substring(0, data.IndexOf(";")) + Environment.NewLine + Capitalize(data.Substring(data.IndexOf(";") + 2));
+            return string.IsNullOrEmpty(data) ? data : data.Substring(0, data.IndexOf(";")) + Environment.NewLine + Capitalize(data.Substring(data.IndexOf(";") + 2));
         }
 
         internal static StringBuilder ConvertTableToHTML(DataGridView dataGridView)
