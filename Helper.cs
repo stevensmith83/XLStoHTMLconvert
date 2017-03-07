@@ -71,7 +71,7 @@ namespace XLStoHTMLconvert
         public static DataTable ImportXLS(string fileName)
         {
             string sheetName = ConfigurationManager.AppSettings["SheetName"];
-            string connectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + fileName + ";Extended Properties='Excel 12.0;HDR=NO;';";
+            string connectionString = "Provider=" + GetProvider() + ";Data Source=" + fileName + ";Extended Properties='Excel 12.0;HDR=NO;';";
 
             OleDbConnection connection = new OleDbConnection(connectionString);
             OleDbCommand command = new OleDbCommand("Select * From [" + sheetName + "$]", connection);
@@ -81,6 +81,27 @@ namespace XLStoHTMLconvert
             DataTable data = new DataTable();
             adapter.Fill(data);
             return data;
+        }
+
+        private static string GetProvider()
+        {
+            var reader = OleDbEnumerator.GetRootEnumerator();
+            var provider = string.Empty;
+
+            while (reader.Read())
+            {
+                for (var i = 0; i < reader.FieldCount; i++)
+                {
+                    if (reader.GetName(i) == "SOURCES_NAME" && reader.GetValue(0).ToString().Contains("Microsoft.ACE.OLEDB"))
+                    {
+                        provider = reader.GetValue(i).ToString();
+                        break;
+                    }
+                }                
+            }
+
+            reader.Close();
+            return provider;
         }
 
         public static string Capitalize(string input)
