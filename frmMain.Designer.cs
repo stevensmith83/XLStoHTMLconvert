@@ -34,7 +34,7 @@
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabSource = new System.Windows.Forms.TabPage();
-            this.btnConvert = new System.Windows.Forms.Button();
+            this.btnConvertBootstrap = new System.Windows.Forms.Button();
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.dateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.tbWeek = new System.Windows.Forms.TextBox();
@@ -42,7 +42,6 @@
             this.tabHTML = new System.Windows.Forms.TabPage();
             this.richTextBox = new System.Windows.Forms.RichTextBox();
             this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
-            this.btnConvertBootstrap = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tabSource.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
@@ -79,7 +78,6 @@
             // tabSource
             // 
             this.tabSource.Controls.Add(this.btnConvertBootstrap);
-            this.tabSource.Controls.Add(this.btnConvert);
             this.tabSource.Controls.Add(this.dataGridView);
             this.tabSource.Controls.Add(this.dateTimePicker);
             this.tabSource.Controls.Add(this.tbWeek);
@@ -93,15 +91,15 @@
             this.tabSource.Text = "Source";
             this.tabSource.UseVisualStyleBackColor = true;
             // 
-            // btnConvert
+            // btnConvertBootstrap
             // 
-            this.btnConvert.Location = new System.Drawing.Point(378, 6);
-            this.btnConvert.Name = "btnConvert";
-            this.btnConvert.Size = new System.Drawing.Size(110, 23);
-            this.btnConvert.TabIndex = 5;
-            this.btnConvert.Text = "Convert to HTML";
-            this.btnConvert.UseVisualStyleBackColor = true;
-            this.btnConvert.Click += new System.EventHandler(this.btnConvert_Click);
+            this.btnConvertBootstrap.Location = new System.Drawing.Point(378, 6);
+            this.btnConvertBootstrap.Name = "btnConvertBootstrap";
+            this.btnConvertBootstrap.Size = new System.Drawing.Size(110, 23);
+            this.btnConvertBootstrap.TabIndex = 6;
+            this.btnConvertBootstrap.Text = "Convert to HTML";
+            this.btnConvertBootstrap.UseVisualStyleBackColor = true;
+            this.btnConvertBootstrap.Click += new System.EventHandler(this.btnConvertBootstrap_Click);
             // 
             // dataGridView
             // 
@@ -174,16 +172,6 @@
             this.richTextBox.TabIndex = 0;
             this.richTextBox.Text = "";
             // 
-            // btnConvertBootstrap
-            // 
-            this.btnConvertBootstrap.Location = new System.Drawing.Point(494, 6);
-            this.btnConvertBootstrap.Name = "btnConvertBootstrap";
-            this.btnConvertBootstrap.Size = new System.Drawing.Size(110, 23);
-            this.btnConvertBootstrap.TabIndex = 6;
-            this.btnConvertBootstrap.Text = "Convert to HTML";
-            this.btnConvertBootstrap.UseVisualStyleBackColor = true;
-            this.btnConvertBootstrap.Click += new System.EventHandler(this.btnConvertBootstrap_Click);
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -216,7 +204,6 @@
         private System.Windows.Forms.TextBox tbWeek;
         private System.Windows.Forms.DataGridView dataGridView;
         private System.Windows.Forms.RichTextBox richTextBox;
-        private System.Windows.Forms.Button btnConvert;
         private System.Windows.Forms.Button btnConvertBootstrap;
         private System.Windows.Forms.BindingSource bindingSource1;
     }

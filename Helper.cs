@@ -14,7 +14,6 @@ namespace XLStoHTMLconvert
     public static class Helper
     {
         public static Dictionary<string, string> correction;
-        public static List<string> prices;
         public static List<string> headerList;
 
         public static void InitDictionaryAndList()
@@ -27,15 +26,21 @@ namespace XLStoHTMLconvert
                 correction = input.TrimEnd(';').Split(';').ToDictionary(item => item.Split('=')[0], item => item.Split('=')[1]);
             }
 
-            prices = new List<String>();
-            prices = ConfigurationManager.AppSettings["Prices"].Split(';').ToList();
             headerList = new List<String>();
             headerList = ConfigurationManager.AppSettings["Header"].Split(';').ToList();
         }
 
         public static void SaveToDictionary(string key, string value)
         {
-            correction.Add(key, value);
+            if (correction.ContainsKey(key))
+            {
+                correction[key] = value;
+            }
+            else
+            {
+                correction.Add(key, value);
+            }
+            
             SaveDictionaryToConfig();
         }
 
@@ -138,91 +143,7 @@ namespace XLStoHTMLconvert
         {
             data = data.Replace("L1,", firstCell + ";").Replace("L2,", secondCell + ";");
             return string.IsNullOrEmpty(data) ? data : data.Substring(0, data.IndexOf(";")) + Environment.NewLine + Capitalize(data.Substring(data.IndexOf(";") + 2));
-        }
-
-        internal static StringBuilder ConvertTableToHTML(DataGridView dataGridView)
-        {
-            StringBuilder html = new StringBuilder();
-
-            html.AppendLine("<div><table align='center' border='0' cellpadding='2' cellspacing='2'>");
-            html.AppendLine("<tbody><tr>");
-
-            for (int col = 0; col < dataGridView.Columns.Count; col++)
-            {
-                if (!string.IsNullOrEmpty(dataGridView[col, 0].Value.ToString()))
-                {
-                    html.Append("<td ");
-                    switch (col)
-                    {
-                        case 0:
-                            html.Append("rowspan='2' ");
-                            break;
-                        case 1:
-                        case 5:
-                            html.Append("colspan='2' ");
-                            break;
-                    }
-
-                    html.AppendLine("style='text-align: center; background-color: rgb(153, 0, 0);'><div><span style = 'color: rgb(255, 255, 255);'><strong>" + dataGridView[col, 0].Value + "</strong></span></div></td>");
-                }
-            }
-
-            html.AppendLine("</tr><tr>");
-
-            for (int col = 1; col < dataGridView.Columns.Count; col++)
-            {
-                html.Append("<td style='background-color: rgb(153, 0, 0);'><div style='text-align: center;'><span style='color: rgb(255, 255, 255);'><strong>");
-                switch (col)
-                {
-                    case 1:
-                    case 5:
-                        html.Append("I.");
-                        break;
-                    case 2:
-                    case 6:
-                        html.Append("II.");
-                        break;
-                }
-
-                html.AppendLine("</strong></span></div><div style='text-align: center;'><span style='color: rgb(255, 255, 255);'><strong>" + prices[col - 1] + " Ft/adag</strong></span></div></td>");
-            }
-
-            html.AppendLine("</tr>");
-
-            for (int row = 2; row < dataGridView.Rows.Count; row++)
-            {
-                html.AppendLine("<tr>");
-                Boolean firstCell = true;
-
-                foreach (DataGridViewCell cell in dataGridView.Rows[row].Cells)
-                {
-                    string color = firstCell ? "rgb(153, 0, 0)" : "rgb(255, 102, 0)";
-                    string data = cell.Value.ToString();
-                    string emTag = "";
-
-                    if (data.Contains(System.Environment.NewLine))
-                    {
-                        if (firstCell)
-                        {
-                            data = "<strong>" + data.Replace(System.Environment.NewLine, "</strong></span></div><div><span style='color: rgb(255, 255, 255);'>");
-                        }
-                        else
-                        {
-                            data = data.Replace(System.Environment.NewLine, "</span></em></div><div><em><span style='color:#ffffff;'>");
-                            emTag = "</em>";
-                        }
-                    }
-
-                    html.AppendLine("<td style='text-align: center; background-color: " + color + ";'><div><span style='color:#ffffff;'>" + data + "</span>" + emTag + "</div></td>");
-                    firstCell = false;
-                }
-
-                html.AppendLine("</tr>");
-            }
-
-            html.AppendLine("</tbody></table></div>");
-            return html;
-        }
+        }              
 
         public static string Format8thCell(string data)
         {
