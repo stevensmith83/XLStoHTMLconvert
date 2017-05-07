@@ -76,7 +76,7 @@ namespace XLStoHTMLconvert
         public static DataTable ImportXLS(string fileName)
         {
             string sheetName = ConfigurationManager.AppSettings["SheetName"];
-            string connectionString = "Provider=" + GetProvider() + ";Data Source=" + fileName + ";Extended Properties='Excel 12.0;HDR=NO;';";
+            string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + fileName + ";Extended Properties='Excel 8.0;HDR=NO;';";
 
             OleDbConnection connection = new OleDbConnection(connectionString);
             OleDbCommand command = new OleDbCommand("Select * From [" + sheetName + "$]", connection);
